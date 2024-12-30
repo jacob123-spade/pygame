@@ -1,0 +1,38 @@
+import pygame 
+pygame.init()
+
+#화면 설정 
+screen_width =  480
+screen_height = 640 
+screen = pygame.display.set_mode((screen_width,screen_height))
+
+#캡션 설정 
+pygame.display.set_caption("Nado Game")
+
+#background 
+background = pygame.image.load("/Users/john/Desktop/vscode/python/pygame_basic/white.png")
+
+#character(스프라이트라고도 함)
+character = pygame.image.load("/Users/john/Desktop/vscode/python/pygame_basic/gun_man 복사본.tiff")
+character_size = character.get_rect().size #이미지의 크기를 구해옴 
+character_width = character_size[0] #캐릭터의 가로 크기 
+character_height = character_size[1] #캐릭터의 세로 크기 
+character_x_pos = (screen_width / 2) - (character_width/2) #화면 가로의 절반크기에 해당하는 곳에 위치 
+character_y_pos = screen_height - 107 
+#게임 러닝 
+running = True 
+while running: 
+    for event in pygame.event.get(): 
+        if event.type == pygame.QUIT: 
+            running = False 
+    screen.blit(background,(0,0)) #배경실행 
+    screen.blit(character,(character_x_pos,character_y_pos))
+    pygame.display.update() #게임 화면 다시 그리기 파이게임에서는 무조건 실행되어야 함
+
+    #screen.fill((R,G,B)) 색을 채워주는 기능 
+    
+    
+
+
+pygame.quit()
+
