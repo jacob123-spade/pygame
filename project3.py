@@ -1,16 +1,15 @@
 import pygame 
 from random import* 
 
-pygame.init()
+pygame.init() 
 
-#Background 
-
+#Screen
 screen_width = 640 
 screen_height = 480 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("project3")
 
-#background, stage 
+#Background & stage 
 background = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/neumorphic-style-blank-white-banner-with-slanting-lines-design_1017-53841.jpg 복사본.tiff")
 stage = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/stage.tiff")
 stage_height = stage.get_rect().size[1]
@@ -21,11 +20,7 @@ block_width = block.get_rect().size[0]
 block_height = block.get_rect().size[1]
 block_x_pos = randint(0,screen_width - block_width)
 block_y_pos = 0
-
 block_spd = 5
-
-
-
 
 #main character 
 m_char = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/gun_man .tiff")
@@ -45,7 +40,6 @@ weapons = []
 weapon_spd = 20
 weapon_to_remove = -1 
 
-
 # FPS
 fps = pygame.time.Clock()
 
@@ -57,9 +51,10 @@ start_tick = pygame.time.get_ticks()
 count = 0 
 
 
+#Functions
 
-while True:
-    
+def Moving():
+    global to_x,char_spd,fps,dt 
     dt = fps.tick(30)
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT: 
@@ -82,40 +77,43 @@ while True:
             if event.key == pygame.K_LEFT or pygame.K_RIGHT: 
                 to_x = 0
 
+def Weapons():
+    global weapons
+    weapons = [[w[0], w[1] - weapon_spd] for w in weapons] #w는 weapons안에서 한꺼풀 벗겨낸 것이기 때문에 리스트 안의 리스트를 의미한다. 
+    weapons = [[w[0], w[1]] for w in weapons if w[1] > 0]
+
+
+def Drawing(): 
+    screen.blit(background,(0,0))
+    screen.blit(counter,(screen_width-counter_width - 5 ,0))
+    screen.blit(timer,(0,0))
+    screen.blit(stage,(0,screen_height - stage_height))
+    for weapon_pos_x, weapon_pos_y in weapons: 
+        screen.blit(weapon,(weapon_pos_x,weapon_pos_y))
+    screen.blit(block,(block_x_pos,block_y_pos))
+    screen.blit(m_char,(m_char_x_pos,m_char_y_pos))
+    pygame.display.update()
+
+
+
+
+while True: 
+
+    Moving()
+
+    #Main character moving 
     m_char_x_pos += to_x * dt 
     m_char_rect = m_char.get_rect()
     m_char_rect.left = m_char_x_pos
     m_char_rect.top = m_char_y_pos
-    weapons = [[w[0], w[1] - weapon_spd] for w in weapons] #w는 weapons안에서 한꺼풀 벗겨낸 것이기 때문에 리스트 안의 리스트를 의미한다. 
-    weapons = [[w[0], w[1]] for w in weapons if w[1] > 0]
 
-   
-    block_y_pos += block_spd  
-    if block_y_pos >= screen_height - stage_height: 
-        block_y_pos = 0 
-        block_x_pos = randint(0,screen_width - block_width)
-
-    block_rect = block.get_rect()
-    block_rect.left = block_x_pos 
-    block_rect.top = block_y_pos
-    
-    if m_char_rect.colliderect(block_rect): 
-        break   
-    
-
-
-    if m_char_x_pos <= 0: 
+    if m_char_x_pos <= 0:
         m_char_x_pos = 0 
     elif m_char_x_pos >= screen_width - m_char_width:
         m_char_x_pos = screen_width - m_char_width
 
-   
-    
-    
-    
 
-    
-    
+    Weapons()
 
     for weapon_idx,weapon_val in enumerate(weapons): 
         weapon_left = weapon_val[0]
@@ -132,9 +130,21 @@ while True:
             block_y_pos = 0
             if count >= 10: 
                 block_spd = 10
-        
-            
-        
+    
+    #Blocks moving 
+    block_y_pos += block_spd  
+    if block_y_pos >= screen_height - stage_height: 
+        block_y_pos = 0 
+        block_x_pos = randint(0,screen_width - block_width)
+
+    block_rect = block.get_rect()
+    block_rect.left = block_x_pos 
+    block_rect.top = block_y_pos
+    
+    if m_char_rect.colliderect(block_rect): 
+        break
+
+    #Collision 
     if weapon_to_remove == 0: 
         del weapons[weapon_to_remove]
         weapon_to_remove = -1
@@ -150,21 +160,10 @@ while True:
         break 
     counter = font.render("Count: {0}".format(count), True, (0,0,0))
     counter_width = counter.get_rect().size[0]
-    
-    
-    
 
-
+    Drawing()
     
-    screen.blit(background,(0,0))
-    screen.blit(counter,(screen_width-counter_width - 5 ,0))
-    screen.blit(timer,(0,0))
-    screen.blit(stage,(0,screen_height - stage_height))
-    for weapon_pos_x, weapon_pos_y in weapons: 
-        screen.blit(weapon,(weapon_pos_x,weapon_pos_y))
-    screen.blit(block,(block_x_pos,block_y_pos))
-    screen.blit(m_char,(m_char_x_pos,m_char_y_pos))
-    pygame.display.update()
+    
 
 
 msg = font.render(game_ending,True,(0,0,255))
