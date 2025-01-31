@@ -152,7 +152,7 @@ while True:
         game_ending = "You Win"
         break 
 
-    
+    #Timer & Counting 
     loading_time = int(pygame.time.get_ticks() - start_tick) / 1000
     timer = font.render(f"Timer: {int(full_time - loading_time)}",True,(0,0,255))
     if full_time - loading_time <= 0:
