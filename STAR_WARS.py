@@ -134,8 +134,10 @@ def Moving():
 
     if m_char_x_pos <= 0: 
         m_char_x_pos = 0 
-    elif m_char_x_pos >= screen_width - m_char_width: 
-        m_char_x_pos = screen_width - m_char_width 
+    
+    elif m_char_x_pos >= screen_width/2 - m_char_width:
+        m_char_x_pos = screen_width/2 - m_char_width
+
     
     if m_char_y_pos <= 0: 
         m_char_y_pos = 0 
