@@ -17,8 +17,8 @@ pygame.display.set_caption("Star Wars")
 
 #Background
 background =  pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/스타워즈.jpeg")
-back_width = (pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/스타워즈.jpeg")).get_rect().size[0]
-back_height = (pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/스타워즈.jpeg")).get_rect().size[1]
+back_width = background.get_rect().size[0]
+back_height = background.get_rect().size[1]
 
 #Main character 
 m_char = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/전투기.png")
@@ -32,7 +32,7 @@ enemy = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/e
 enemy_width = enemy.get_rect().size[0]
 enemy_height = enemy.get_rect().size[1]
 enemy_x_pos = screen_width/2 
-enemy_y_pos = screen_height/2
+enemy_y_pos = screen_height/7
 
 enemy_spdx = int(uniform(-10,10))
 enemy_spdy = int(uniform(-10,10))
@@ -44,8 +44,8 @@ assister_height = assister.get_rect().size[1]
 assister_spdx = int(uniform(-10,10))
 assister_spdy = int(uniform(-10,10))
 
-assister_x_pos = screen_width/3 
-assister_y_pos = screen_height/2 
+assister_x_pos = screen_width/5 
+assister_y_pos = screen_height/3
 
 
 
@@ -95,7 +95,8 @@ font = pygame.font.Font(None, 40)
 ending = "Game Over"
 start_tick = pygame.time.get_ticks()
 full_time = 100
-stamina = 10 
+stamina_enemy = 10
+stamina_main = 10 
 
 
 #Functions 
@@ -221,7 +222,7 @@ while True:
     enemy_rect.left = enemy_x_pos 
     enemy_rect.top = enemy_y_pos 
 
-    for weapon_idx, weapon_val in enumerate(weapons): 
+    for weapon_idx, weapon_val in enumerate(weapons):
         weapon_rect = weapon.get_rect() 
         weapon_rect.left = weapon_val[0]
         weapon_rect.top = weapon_val[1]
@@ -245,7 +246,7 @@ while True:
             pygame.display.update()
             pygame.time.wait(30)
             explosion.play()
-            stamina -= 0.5
+            stamina_enemy -= 0.5
             break 
             
 
@@ -278,33 +279,49 @@ while True:
         expl2_x_pos = enemy_x_pos 
         expl2_y_pos = enemy_y_pos
         weapon2_x_pos = assister_x_pos
-        weapon2_y_pos = assister_y_pos 
+        weapon2_y_pos = assister_y_pos
         screen.blit(expl2,(expl2_x_pos,expl2_y_pos))
         pygame.display.update()
         pygame.time.wait(30)
         explosion.play()
-        stamina -= 0.5
+        stamina_enemy -= 0.5
 
             
 
     if m_char_rect.colliderect(weapon1_rect):
         screen.blit(expl1,(m_char_x_pos,m_char_y_pos))
+        pygame.display.update()
+        pygame.time.wait(30)
         explosion.play()
-        pygame.time.wait(500)
-        ending = "You Lose"
-        break 
+        weapon1_pos_x = enemy_x_pos
+        weapon1_pos_y = enemy_y_pos 
+        stamina_main -= 1
     
+
 
     #Timer 
     loading_tick = int(pygame.time.get_ticks() - start_tick) /1000
     clock = font.render(f"Time: {int(full_time - loading_tick)}",True,(0,0,255))
     clock_width = clock.get_rect().size[0]
 
-    damage = font.render(f"Stamina: {stamina}",True, (0,255,255))
-    damage_width = damage.get_rect().size[0]
-    if stamina <= 0:
+    damage_enemy = font.render(f"Enemy: {stamina_enemy}",True, (0,255,255))
+    damage_enemy_width = damage_enemy.get_rect().size[0]
+
+
+    damage_main = font.render(f"Main: {stamina_main}",True,(0,255,255))
+    damage_main_width = damage_main.get_rect().size[0]
+
+
+    if stamina_enemy < 0:
         ending ="You Win"
+        break
+    elif stamina_main < 0: 
+        ending = "You lose"
+        break
+    elif stamina_enemy < 0 and stamina_main < 0:
+        ending = "Drawing"
         break 
+
     
     if int(full_time - loading_tick) < 0: 
         ending = "Time Over"
@@ -312,7 +329,7 @@ while True:
     
     
     screen.blit(background,(0,0))
-    for weapon_pos_x, weapon_pos_y in weapons: 
+    for weapon_pos_x, weapon_pos_y in weapons:
         screen.blit(weapon,(weapon_pos_x,weapon_pos_y))
     screen.blit(m_char,(m_char_x_pos,m_char_y_pos))
     screen.blit(weapon1,(weapon1_pos_x,weapon1_pos_y))
@@ -320,7 +337,8 @@ while True:
     screen.blit(weapon2,(weapon2_x_pos,weapon2_y_pos))
     screen.blit(assister,(assister_x_pos,assister_y_pos))
     screen.blit(clock,(10,0))
-    screen.blit(damage,(screen_width- damage_width,0))
+    screen.blit(damage_enemy,(screen_width- damage_enemy_width,0))
+    screen.blit(damage_main,(screen_width/2 - damage_main_width,0))
     
     pygame.display.update()
 
