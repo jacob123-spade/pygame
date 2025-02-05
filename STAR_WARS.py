@@ -50,7 +50,7 @@ assister_y_pos = screen_height/2
 
 
 #Weapon(Main Character)
-weapon = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/bullet.png")
+weapon = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/bullet.png")
 weapon_width = weapon.get_rect().size[0]
 weapon_height = weapon.get_rect().size[1]
 weapons = []
@@ -83,7 +83,8 @@ weapon_to_remove = -1
 to_x = 0 
 to_y = 0  
 char_spd = 0.5
-weapon_spd = 15 
+weapon_spd = 15
+weapon_spd1 = 20 
 
 #FPS
 fps = pygame.time.Clock()
@@ -148,7 +149,7 @@ def Weapons():
 
 def Weapon_Ene():
     global weapon1_pos_x,weapon1_pos_y, weapon_spd, enemy_x_pos,enemy_y_pos
-    weapon1_pos_x -= weapon_spd
+    weapon1_pos_x -= weapon_spd1
     if weapon1_pos_x <= 0: 
         weapon1_pos_x = enemy_x_pos 
         weapon1_pos_y = enemy_y_pos
@@ -301,7 +302,7 @@ while True:
 
     damage = font.render(f"Stamina: {stamina}",True, (0,255,255))
     damage_width = damage.get_rect().size[0]
-    if stamina < 0:
+    if stamina <= 0:
         ending ="You Win"
         break 
     
