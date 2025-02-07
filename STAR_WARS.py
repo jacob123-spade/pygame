@@ -8,6 +8,9 @@ pygame.init()
 main_theme_music = pygame.mixer.Sound("/Users/hamin/Desktop/pygame/python/project/project3/Star Wars main theme - 1 hour - (John Williams).mp3")
 main_theme_music.play()
 explosion = pygame.mixer.Sound("/Users/hamin/Desktop/pygame/python/project/project3/Explosion Sound.mp3")
+
+#Sound Effect 
+firing = pygame.mixer.Sound("/Users/hamin/Desktop/pygame/python/project/project3/Blaster Shot - Sound Effect for editing.mp3")
 #screen 
 screen_width = 1080
 screen_height = 640 
@@ -50,20 +53,20 @@ assister_y_pos = screen_height/3
 
 
 #Weapon(Main Character)
-weapon = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/bullet.png")
+weapon = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/beam1.png")
 weapon_width = weapon.get_rect().size[0]
 weapon_height = weapon.get_rect().size[1]
 weapons = []
 
 #Weapon(Enemy)
-weapon1 = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/bullet_enemy.png")
+weapon1 = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/beam3.jpg")
 weapon1_width = weapon1.get_rect().size[0]
 weapon1_height = weapon1.get_rect().size[1]
 weapon1_pos_x = enemy_x_pos
 weapon1_pos_y = enemy_y_pos
 
 #Weapon(Assister)
-weapon2 = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/bullet_assister.png")
+weapon2 = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/beam1.png")
 weapon2_width = weapon2.get_rect().size[0]
 weapon2_height = weapon2.get_rect().size[1]
 weapon2_x_pos = assister_x_pos 
@@ -122,6 +125,11 @@ def Moving():
                 weapon_x_pos = m_char_x_pos + m_char_width/2 - weapon_width/2
                 weapon_y_pos = m_char_y_pos + m_char_height/3
                 weapons.append([weapon_x_pos,weapon_y_pos])
+                firing1.play()
+               
+                
+                
+             
 
 
         if event.type == pygame.KEYUP: 
@@ -156,6 +164,7 @@ def Weapon_Ene():
     if weapon1_pos_x <= 0: 
         weapon1_pos_x = enemy_x_pos 
         weapon1_pos_y = enemy_y_pos
+   
     
 def Assister_Moving(): 
     global assister_spdx,assister_spdy,assister_x_pos,assister_y_pos,assister_width,assister_height
@@ -179,9 +188,8 @@ def Assister_Moving():
 
 def Weapon_Assis():
     global weapon2_width,weapon2_height,assister_width,assister_x_pos,assister_y_pos,screen_width,weapon2_x_pos,weapon2_y_pos
+    weapon2_x_pos += weapon_spd
     
-
-    weapon2_x_pos += weapon_spd 
     if weapon2_x_pos >= screen_width- weapon2_width: 
         weapon2_x_pos = assister_x_pos
         weapon2_y_pos = assister_y_pos 
