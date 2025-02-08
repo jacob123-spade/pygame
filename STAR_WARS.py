@@ -37,8 +37,8 @@ enemy_height = enemy.get_rect().size[1]
 enemy_x_pos = screen_width/2 
 enemy_y_pos = screen_height/7
 
-enemy_spdx = int(uniform(-10,10))
-enemy_spdy = int(uniform(-10,10))
+enemy_spdx = int(uniform(-30,30))
+enemy_spdy = int(uniform(-30,30))
 
 #Assiter 
 assister = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/Star-Wars Empire Ship-48.png")
@@ -86,12 +86,11 @@ weapon_to_remove = -1
 to_x = 0 
 to_y = 0  
 char_spd = 0.5
-weapon_spd = 15
-weapon_spd1 = 20 
+weapon_spd = 30
+weapon_spd1 = 60 
 
 #FPS
 fps = pygame.time.Clock()
-
 
 #Font & Game Ending & Timer 
 font = pygame.font.Font(None, 40)
@@ -125,7 +124,7 @@ def Moving():
                 weapon_x_pos = m_char_x_pos + m_char_width/2 - weapon_width/2
                 weapon_y_pos = m_char_y_pos + m_char_height/3
                 weapons.append([weapon_x_pos,weapon_y_pos])
-                firing1.play()
+                firing.play()
                
                 
                 
@@ -209,18 +208,18 @@ while True:
 
     if enemy_x_pos <= screen_width/2 or enemy_x_pos >= screen_width - enemy_width: 
         enemy_x_pos += -(enemy_spdx) 
-        enemy_spdx = int(uniform(-10,10)) 
-        enemy_spdy = int(uniform(-10,10))
+        enemy_spdx = int(uniform(-30,30)) 
+        enemy_spdy = int(uniform(-30,30))
 
         
     elif enemy_y_pos <=0 or enemy_y_pos >= screen_height - enemy_height: 
         enemy_y_pos += -(enemy_spdy)
-        enemy_spdx = int(uniform(-10,10))
-        enemy_spdy = int(uniform(-10,10))
+        enemy_spdx = int(uniform(-30,30))
+        enemy_spdy = int(uniform(-30,30))
 
     if enemy_spdx == 0 or enemy_spdy == 0:
-            enemy_spdx = int(uniform(-10,10)) 
-            enemy_spdy = int(uniform(-10,10))
+            enemy_spdx = int(uniform(-30,30)) 
+            enemy_spdy = int(uniform(-30,30))
     
     #Collision 
 
