@@ -57,6 +57,7 @@ weapon = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/
 weapon_width = weapon.get_rect().size[0]
 weapon_height = weapon.get_rect().size[1]
 weapons = []
+weapons1 = []
 
 #Weapon(Enemy)
 weapon1 = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/beam3.jpg")
@@ -73,6 +74,13 @@ weapon2_x_pos = assister_x_pos
 weapon2_y_pos = assister_y_pos 
 
 
+
+#Coin(items)
+coins = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/game-coin_17879907.png")            
+coin_weapon_width = coins.get_rect().size[0]
+coin_weapon_height = coins.get_rect().size[1]
+coin_weapon_x_pos = int(uniform(0,screen_width/2 - coin_weapon_width))
+coin_weapon_y_pos = int(uniform(0,screen_height - coin_weapon_height))
 
 #Explosion 
 expl = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/폭발.png")
@@ -105,7 +113,7 @@ stamina_main = 10
 
 def Moving():
 
-    global fps, to_x, to_y, char_spd,m_char_x_pos,m_char_y_pos,m_char_width,m_char_height,weapons
+    global fps, to_x, to_y, char_spd,m_char_x_pos,m_char_y_pos,m_char_width,m_char_height,weapons,coin_rect,m_char_rect
     dt = fps.tick(30)
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT: 
@@ -125,16 +133,25 @@ def Moving():
                 weapon_y_pos = m_char_y_pos + m_char_height/3
                 weapons.append([weapon_x_pos,weapon_y_pos])
                 firing.play()
-               
-                
-                
-             
+         
 
-
+            if event.key == pygame.K_s:
+                to_x -= char_spd
+            elif event.key == pygame.K_f: 
+                to_x += char_spd
+            elif event.key == pygame.K_e: 
+                to_y -= char_spd
+            elif event.key == pygame.K_d: 
+                to_y += char_spd
+                
         if event.type == pygame.KEYUP: 
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:  
                 to_x = 0 
             elif event.key == pygame.K_UP or event.key == pygame.K_DOWN: #이렇게 event.key == 으로 구분하지 않으면 애러가 날 수 있으므로 주의 
+                to_y = 0
+            if event.key == pygame.K_s or event.key == pygame.K_f:  
+                to_x = 0 
+            elif event.key == pygame.K_e or event.key == pygame.K_d: #이렇게 event.key == 으로 구분하지 않으면 애러가 날 수 있으므로 주의 
                 to_y = 0
     m_char_x_pos += to_x * dt
     m_char_y_pos += to_y * dt
@@ -152,9 +169,10 @@ def Moving():
         m_char_y_pos = screen_height - m_char_height
 
 def Weapons():
-    global weapons
+    global weapons,weapons1
     weapons = [[w[0]+ weapon_spd, w[1]] for w in weapons] 
     weapons = [[w[0], w[1]] for w in weapons if w[0] <= screen_width - weapon_width]
+    
 
 
 def Weapon_Ene():
@@ -193,14 +211,17 @@ def Weapon_Assis():
         weapon2_x_pos = assister_x_pos
         weapon2_y_pos = assister_y_pos 
 
-        
 
+    
+
+    
 while True: 
     Moving()
     Weapons()
     Weapon_Ene()
     Assister_Moving()
     Weapon_Assis()
+    
     
     
     enemy_x_pos += enemy_spdx 
@@ -230,6 +251,10 @@ while True:
     enemy_rect = enemy.get_rect()
     enemy_rect.left = enemy_x_pos 
     enemy_rect.top = enemy_y_pos 
+
+    coin_rect = coins.get_rect()
+    coin_rect.left = coin_weapon_x_pos
+    coin_rect.top = coin_weapon_y_pos
 
     for weapon_idx, weapon_val in enumerate(weapons):
         weapon_rect = weapon.get_rect() 
@@ -305,10 +330,14 @@ while True:
         weapon1_pos_x = enemy_x_pos
         weapon1_pos_y = enemy_y_pos 
         stamina_main -= 1
-    
 
+    if m_char_rect.colliderect(coin_rect):
+        coin_weapon_x_pos = -(coin_weapon_width)
+        coin_weapon_y_pos = 0
+        weapon_spd = 80
+        
 
-    #Timer 
+#Timer 
     loading_tick = int(pygame.time.get_ticks() - start_tick) /1000
     clock = font.render(f"Time: {int(full_time - loading_tick)}",True,(0,0,255))
     clock_width = clock.get_rect().size[0]
@@ -328,7 +357,7 @@ while True:
         ending = "You lose"
         break
     elif stamina_enemy < 0 and stamina_main < 0:
-        ending = "Drawing"
+        ending = "Draw"
         break 
 
     
@@ -340,11 +369,14 @@ while True:
     screen.blit(background,(0,0))
     for weapon_pos_x, weapon_pos_y in weapons:
         screen.blit(weapon,(weapon_pos_x,weapon_pos_y))
+    for weapon_x,weapon_y in weapons1: 
+        screen.blit(weapon,(weapon_x,weapon_y))
     screen.blit(m_char,(m_char_x_pos,m_char_y_pos))
     screen.blit(weapon1,(weapon1_pos_x,weapon1_pos_y))
     screen.blit(enemy,(enemy_x_pos,enemy_y_pos))
     screen.blit(weapon2,(weapon2_x_pos,weapon2_y_pos))
     screen.blit(assister,(assister_x_pos,assister_y_pos))
+    screen.blit(coins,(coin_weapon_x_pos,coin_weapon_y_pos))
     screen.blit(clock,(10,0))
     screen.blit(damage_enemy,(screen_width- damage_enemy_width,0))
     screen.blit(damage_main,(screen_width/2 - damage_main_width,0))
