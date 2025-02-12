@@ -4,6 +4,7 @@ from random import*
 
 pygame.init()
 
+#------------------------------------Basic------------------------------------------------------------------------
 #BGM
 main_theme_music = pygame.mixer.Sound("/Users/hamin/Desktop/pygame/python/project/project3/Star Wars main theme - 1 hour - (John Williams).mp3")
 main_theme_music.play()
@@ -12,16 +13,19 @@ explosion = pygame.mixer.Sound("/Users/hamin/Desktop/pygame/python/project/proje
 #Sound Effect 
 firing = pygame.mixer.Sound("/Users/hamin/Desktop/pygame/python/project/project3/Blaster Shot - Sound Effect for editing.mp3")
 #screen 
-screen_width = 1080
-screen_height = 640 
+screen_width = 1500
+screen_height = 800
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Star Wars")
 
 
 #Background
-background =  pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/스타워즈.jpeg")
+background =  pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/스타워즈 배경.jpg")
 back_width = background.get_rect().size[0]
 back_height = background.get_rect().size[1]
+
+#----------------------------------------------------------------------------------------------------------------------
+#---------------------------------Objects------------------------------------------------------------------------------
 
 #Main character 
 m_char = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/전투기.png")
@@ -58,8 +62,8 @@ assister_spdy = int(uniform(-10,10))
 
 assister_x_pos = screen_width/5 
 assister_y_pos = screen_height/3
-
-
+#---------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------Weapons-------------------------------------------------------------------
 
 #Weapon(Main Character)
 weapon = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/beam1.png")
@@ -88,7 +92,8 @@ weapon2_height = weapon2.get_rect().size[1]
 weapon2_x_pos = assister_x_pos 
 weapon2_y_pos = assister_y_pos 
 
-
+#---------------------------------------------------------------------------------------------------------
+#--------------------------------------------------Items & Effects----------------------------------------
 
 #Coin(items)
 coins = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/game-coin_17879907.png")            
@@ -104,12 +109,13 @@ expl2 = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/�
 
 #Removing
 weapon_to_remove = -1 
+weapon_to_remove1 = -1
 
 #Moving 
 to_x = 0 
 to_y = 0  
 char_spd = 0.5
-weapon_spd = 30
+weapon_spd = 50
 weapon_spd1 = 60 
 
 #FPS
@@ -122,9 +128,10 @@ start_tick = pygame.time.get_ticks()
 full_time = 100
 stamina_enemy = 10
 stamina_main = 10 
+stamina_enemy1 = 10
 
-
-#Functions 
+#---------------------------------------------------------------------------------------------------------------
+#------------------------------------------------Functions------------------------------------------------------ 
 
 def Moving():
 
@@ -241,10 +248,10 @@ def Weapon_Assis():
         weapon2_x_pos = assister_x_pos
         weapon2_y_pos = assister_y_pos 
 
-    
-    
+#------------------------------------------------------------------------------------------------------------------------   
+#------------------------------------------------------------------------------------------------------------------------  
 
-    
+#--------------------------------------------------------Operation-------------------------------------------------------    
 while True: 
     Moving()
     Weapons()
@@ -253,7 +260,7 @@ while True:
     Weapon_Assis()
     
     
-    #Moving enemies 
+    #--------Moving enemies-------
     enemy_x_pos += enemy_spdx 
     enemy_y_pos += enemy_spdy 
 
@@ -271,27 +278,9 @@ while True:
     if enemy_spdx == 0 or enemy_spdy == 0:
             enemy_spdx = int(uniform(-30,30)) 
             enemy_spdy = int(uniform(-30,30))
-
-
-    enemy1_x_pos += enemy1_spdx 
-    enemy1_y_pos += enemy1_spdy 
-
-    if enemy1_x_pos <= screen_width/2 or enemy1_x_pos >= screen_width - enemy1_width: 
-        enemy1_x_pos += -(enemy1_spdx) 
-        enemy1_spdx = int(uniform(-30,30)) 
-        enemy1_spdy = int(uniform(-30,30))
-
-        
-    elif enemy1_y_pos <=0 or enemy1_y_pos >= screen_height - enemy1_height: 
-        enemy1_y_pos += -(enemy1_spdy)
-        enemy1_spdx = int(uniform(-30,30))
-        enemy1_spdy = int(uniform(-30,30))
-
-    if enemy1_spdx == 0 or enemy1_spdy == 0:
-            enemy1_spdx = int(uniform(-30,30))
-            enemy1_spdy = int(uniform(-30,30))
+    #-------------------------------
     
-    #Collision 
+    #------------Collision---------- 
 
     m_char_rect = m_char.get_rect() 
     m_char_rect.left = m_char_x_pos 
@@ -301,10 +290,15 @@ while True:
     enemy_rect.left = enemy_x_pos 
     enemy_rect.top = enemy_y_pos 
 
+    enemy1_rect = enemy1.get_rect()
+    enemy1_rect.left = enemy1_x_pos
+    enemy1_rect.top = enemy1_y_pos
+
     coin_rect = coins.get_rect()
     coin_rect.left = coin_weapon_x_pos
     coin_rect.top = coin_weapon_y_pos
-
+    #---------------------------------
+    #------------------In List------------------------
     for weapon_idx, weapon_val in enumerate(weapons):
         weapon_rect = weapon.get_rect() 
         weapon_rect.left = weapon_val[0]
@@ -331,13 +325,43 @@ while True:
             explosion.play()
             stamina_enemy -= 0.5
             break
-            
+    
+    for weapons1_idx, weapons1_val in enumerate(weapons1): 
+        weapons1_rect = weapon.get_rect()
+        weapons1_rect.left = weapons1_val[0]
+        weapons1_rect.top = weapons1_val[1]
 
+        if weapons1_rect.colliderect(weapon1_rect): 
+            weapon_to_remove1 = 0
+            weapon1_pos_x = enemy_x_pos
+            weapon1_pos_y = enemy_y_pos 
+            expl_x_pos = weapons1[0][0]
+            expl_y_pos = weapons1[0][1]
+            screen.blit(expl, (expl_x_pos,expl_y_pos))
+            pygame.display.update()
+            pygame.time.wait(30)
+            explosion.play()
+            break
+        if weapons1_rect.colliderect(enemy_rect): 
+            weapon_to_remove1 = 0 
+            expl2_x_pos = enemy_x_pos 
+            expl2_y_pos = enemy_y_pos 
+            screen.blit(expl2,(expl2_x_pos,expl2_y_pos))
+            pygame.display.update()
+            pygame.time.wait(30)
+            explosion.play()
+            stamina_enemy -= 0.5
+            break
+        
     if weapon_to_remove == 0: 
         del weapons[weapon_to_remove]
-        weapon_to_remove = -1 
-        
-    
+        weapon_to_remove = -1
+
+    if weapon_to_remove1 == 0: 
+        del weapons1[weapon_to_remove1]
+        weapon_to_remove1 = -1 
+    #------------------------------------------------------------------
+    #----------------------Not in List-------------------------------- 
     weapon1_rect = weapon1.get_rect()
     weapon1_rect.left = weapon1_pos_x 
     weapon1_rect.top = weapon1_pos_y 
@@ -383,10 +407,10 @@ while True:
     if m_char_rect.colliderect(coin_rect):
         coin_weapon_x_pos = -(coin_weapon_width)
         coin_weapon_y_pos = 0
-        weapon_spd = 80
-        
+        weapon_spd = 50
+    #------------------------------------------------------------       
 
-#Timer 
+    #-------------------------Timer------------------------------- 
     loading_tick = int(pygame.time.get_ticks() - start_tick) /1000
     clock = font.render(f"Time: {int(full_time - loading_tick)}",True,(0,0,255))
     clock_width = clock.get_rect().size[0]
@@ -398,8 +422,11 @@ while True:
     damage_main = font.render(f"Main: {stamina_main}",True,(0,255,255))
     damage_main_width = damage_main.get_rect().size[0]
 
+    damage_enemy1 = font.render(f"Enemy1: {stamina_enemy1}",True,(0,255,255))
+    damage_enemy1_width = damage_enemy1.get_rect().size[0]
 
-    if stamina_enemy < 0:
+
+    if stamina_enemy < 0 :
         ending ="You Win"
         break
     elif stamina_main < 0: 
@@ -413,7 +440,8 @@ while True:
     if int(full_time - loading_tick) < 0: 
         ending = "Time Over"
         break
-    
+    #----------------------------------------------------------------
+    #-----------------------------Drawing----------------------------
     
     screen.blit(background,(0,0))
     for weapon_pos_x, weapon_pos_y in weapons:
@@ -423,8 +451,6 @@ while True:
     screen.blit(m_char,(m_char_x_pos,m_char_y_pos))
     screen.blit(weapon1,(weapon1_pos_x,weapon1_pos_y))
     screen.blit(enemy,(enemy_x_pos,enemy_y_pos))
-    screen.blit(weapon3,(weapon3_pos_x,weapon3_pos_y))
-    screen.blit(enemy1,(enemy1_x_pos,enemy1_y_pos))
     screen.blit(weapon2,(weapon2_x_pos,weapon2_y_pos))
     screen.blit(assister,(assister_x_pos,assister_y_pos))
     screen.blit(coins,(coin_weapon_x_pos,coin_weapon_y_pos))
@@ -441,7 +467,7 @@ pygame.display.update()
 pygame.time.wait(1000)
 main_theme_music.stop()
     
-
+#-----------------------------------------------------------------
 
 pygame.quit()
 
