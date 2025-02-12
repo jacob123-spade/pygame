@@ -40,6 +40,15 @@ enemy_y_pos = screen_height/7
 enemy_spdx = int(uniform(-30,30))
 enemy_spdy = int(uniform(-30,30))
 
+enemy1 = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/enemy .png")
+enemy1_width = enemy1.get_rect().size[0]
+enemy1_height = enemy1.get_rect().size[1]
+enemy1_x_pos = screen_width/2
+enemy1_y_pos = screen_height/9
+
+enemy1_spdx = int(uniform(-30,30))
+enemy1_spdy = int(uniform(-30,30))
+
 #Assiter 
 assister = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/Star-Wars Empire Ship-48.png")
 assister_width = assister.get_rect().size[0]
@@ -65,6 +74,12 @@ weapon1_width = weapon1.get_rect().size[0]
 weapon1_height = weapon1.get_rect().size[1]
 weapon1_pos_x = enemy_x_pos
 weapon1_pos_y = enemy_y_pos
+
+weapon3 = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/beam3.jpg")
+weapon3_width = weapon3.get_rect().size[0]
+weapon3_height = weapon3.get_rect().size[1]
+weapon3_pos_x = enemy1_x_pos
+weapon3_pos_y = enemy1_y_pos
 
 #Weapon(Assister)
 weapon2 = pygame.image.load("/Users/hamin/Desktop/pygame/python/project/project3/beam1.png")
@@ -130,12 +145,18 @@ def Moving():
                 to_y += char_spd
             elif event.key == pygame.K_SPACE:
                 weapon_x_pos = m_char_x_pos + m_char_width/2 - weapon_width/2
-                weapon_y_pos = m_char_y_pos + m_char_height/3
+                weapon_y_pos = m_char_y_pos + m_char_height/3 + weapon_height/3
                 weapons.append([weapon_x_pos,weapon_y_pos])
+                if coin_weapon_x_pos == -(coin_weapon_width) and coin_weapon_y_pos == 0:
+                    weapon_x_pos = m_char_x_pos 
+                    weapon_y_pos = m_char_y_pos
+                    weapons.append([weapon_x_pos,weapon_y_pos])
+                    weapons1_x_pos = m_char_x_pos
+                    weapons1_y_pos = m_char_y_pos + m_char_height - weapon_height
+                    weapons1.append([weapons1_x_pos,weapons1_y_pos])
                 firing.play()
-         
 
-            if event.key == pygame.K_s:
+            if event.key == pygame.K_s: 
                 to_x -= char_spd
             elif event.key == pygame.K_f: 
                 to_x += char_spd
@@ -172,15 +193,23 @@ def Weapons():
     global weapons,weapons1
     weapons = [[w[0]+ weapon_spd, w[1]] for w in weapons] 
     weapons = [[w[0], w[1]] for w in weapons if w[0] <= screen_width - weapon_width]
+    weapons1 = [[w1[0]+ weapon_spd, w1[1]] for w1 in weapons1] 
+    weapons1 = [[w1[0], w1[1]] for w1 in weapons1 if w1[0] <= screen_width - weapon_width]
     
 
 
-def Weapon_Ene():
-    global weapon1_pos_x,weapon1_pos_y, weapon_spd, enemy_x_pos,enemy_y_pos
+def Weapon_Enes():
+    global weapon1_pos_x,weapon1_pos_y, weapon_spd, enemy_x_pos,enemy_y_pos,weapon3_pos_x,weapon3_pos_y,enemy1_x_pos,enemy1_y_pos
     weapon1_pos_x -= weapon_spd1
+    weapon3_pos_x -= weapon_spd1 
+
     if weapon1_pos_x <= 0: 
         weapon1_pos_x = enemy_x_pos 
         weapon1_pos_y = enemy_y_pos
+    
+    if weapon3_pos_x <= 0: 
+        weapon3_pos_x = enemy1_x_pos 
+        weapon3_pos_y = enemy1_y_pos
    
     
 def Assister_Moving(): 
@@ -205,25 +234,26 @@ def Assister_Moving():
 
 def Weapon_Assis():
     global weapon2_width,weapon2_height,assister_width,assister_x_pos,assister_y_pos,screen_width,weapon2_x_pos,weapon2_y_pos
+
     weapon2_x_pos += weapon_spd
     
     if weapon2_x_pos >= screen_width- weapon2_width: 
         weapon2_x_pos = assister_x_pos
         weapon2_y_pos = assister_y_pos 
 
-
+    
     
 
     
 while True: 
     Moving()
     Weapons()
-    Weapon_Ene()
+    Weapon_Enes()
     Assister_Moving()
     Weapon_Assis()
     
     
-    
+    #Moving enemies 
     enemy_x_pos += enemy_spdx 
     enemy_y_pos += enemy_spdy 
 
@@ -241,6 +271,25 @@ while True:
     if enemy_spdx == 0 or enemy_spdy == 0:
             enemy_spdx = int(uniform(-30,30)) 
             enemy_spdy = int(uniform(-30,30))
+
+
+    enemy1_x_pos += enemy1_spdx 
+    enemy1_y_pos += enemy1_spdy 
+
+    if enemy1_x_pos <= screen_width/2 or enemy1_x_pos >= screen_width - enemy1_width: 
+        enemy1_x_pos += -(enemy1_spdx) 
+        enemy1_spdx = int(uniform(-30,30)) 
+        enemy1_spdy = int(uniform(-30,30))
+
+        
+    elif enemy1_y_pos <=0 or enemy1_y_pos >= screen_height - enemy1_height: 
+        enemy1_y_pos += -(enemy1_spdy)
+        enemy1_spdx = int(uniform(-30,30))
+        enemy1_spdy = int(uniform(-30,30))
+
+    if enemy1_spdx == 0 or enemy1_spdy == 0:
+            enemy1_spdx = int(uniform(-30,30))
+            enemy1_spdy = int(uniform(-30,30))
     
     #Collision 
 
@@ -281,7 +330,7 @@ while True:
             pygame.time.wait(30)
             explosion.play()
             stamina_enemy -= 0.5
-            break 
+            break
             
 
     if weapon_to_remove == 0: 
@@ -369,11 +418,13 @@ while True:
     screen.blit(background,(0,0))
     for weapon_pos_x, weapon_pos_y in weapons:
         screen.blit(weapon,(weapon_pos_x,weapon_pos_y))
-    for weapon_x,weapon_y in weapons1: 
-        screen.blit(weapon,(weapon_x,weapon_y))
+    for weapons_pos_x, weapons_pos_y in weapons1:
+        screen.blit(weapon,(weapons_pos_x,weapons_pos_y))
     screen.blit(m_char,(m_char_x_pos,m_char_y_pos))
     screen.blit(weapon1,(weapon1_pos_x,weapon1_pos_y))
     screen.blit(enemy,(enemy_x_pos,enemy_y_pos))
+    screen.blit(weapon3,(weapon3_pos_x,weapon3_pos_y))
+    screen.blit(enemy1,(enemy1_x_pos,enemy1_y_pos))
     screen.blit(weapon2,(weapon2_x_pos,weapon2_y_pos))
     screen.blit(assister,(assister_x_pos,assister_y_pos))
     screen.blit(coins,(coin_weapon_x_pos,coin_weapon_y_pos))
@@ -393,3 +444,7 @@ main_theme_music.stop()
 
 
 pygame.quit()
+
+
+#Question
+# 한 리스트의 인덱스가 한번에 두 개가 동시에 출력될 수가 있나? -> 총알이 그럼 
